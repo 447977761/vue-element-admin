@@ -9,7 +9,12 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+      /**
+       * npm代理，解决调试接口中，跨域问题
+       * */
+      '/shiep/crm/**':'http://localhost:8090'
+    },
 
     // Various Dev Server settings
 
