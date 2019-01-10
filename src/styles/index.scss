@@ -191,3 +191,21 @@ code {
 .multiselect--active {
   z-index: 1000 !important;
 }
+
+.table{
+  background-color: #ffffff;
+  padding: 10px;
+  transition: all 0.45s;
+  border-radius:5px;
+}
+
+.table:hover{
+  -webkit-box-shadow: 0 6px 8px rgba(20, 20, 20, 0.2);
+  -moz-box-shadow: 0 6px 8px rgba(20, 20, 20, 0.2);
+  box-shadow: 0 6px 8px rgba(20, 20, 20, 0.2);
+}
+
+.pagination{
+  margin: 20px 0;
+  text-align: right;
+}

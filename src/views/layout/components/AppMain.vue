@@ -29,6 +29,8 @@ export default {
   width: 100%;
   position: relative;
   overflow: hidden;
+  padding: 10px;
+  background-color: #f0f0f0;
 }
 </style>
 
