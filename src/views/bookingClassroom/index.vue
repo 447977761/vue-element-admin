@@ -2,9 +2,64 @@
   <div class="table">
     <el-tabs :tab-position="tabPosition" @tab-click="changeBuildingTabs">
       <el-tab-pane label="全部">
+        <el-form :inline="true" :model="formInline">
+          <el-form-item label="教室名称" prop="classroomName">
+            <el-input v-model="formInline.classroomName" prefix-icon="el-icon-search" clearable placeholder="请输入教室名称"/>
+          </el-form-item>
+          &nbsp;&nbsp;&nbsp;
+          <el-form-item label="是否存在投影仪" prop="isProjector">
+            <el-select v-model="formInline.isProjector" clearable placeholder="请选择是否存在投影仪" >
+              <el-option
+                v-for="item in isFlag"
+                :key="item.type"
+                :label="item.label"
+                :value="item.type"/>
+            </el-select>
+          </el-form-item>
+          &nbsp;&nbsp;&nbsp;
+          <el-form-item label="是否有电脑" prop="isComputer">
+            <el-select v-model="formInline.isComputer" clearable placeholder="请选择是否有电脑" >
+              <el-option
+                v-for="item in isFlag"
+                :key="item.type"
+                :label="item.label"
+                :value="item.type"/>
+            </el-select>
+          </el-form-item>
+          &nbsp;&nbsp;&nbsp;
+          <el-form-item label="所属大楼">
+            <el-select v-model="formInline.buildingCode" clearable placeholder="请选择所属大楼" style="width: 250px">
+              <el-option
+                v-for="item in buildingInfos"
+                :key="item.buildingCode"
+                :label="item.buildingName"
+                :value="item.buildingCode"/>
+            </el-select>
+          </el-form-item>
+          &nbsp;&nbsp;&nbsp;
+          <el-form-item label="期望预约时间">
+            <div class="block">
+              <el-date-picker
+                :picker-options="pickerOptions"
+                v-model="formInline.expectedOderDate"
+                type="datetimerange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                align="right"/>
+            </div>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="onSubmit">查询</el-button>
+          </el-form-item>
+        </el-form>
         <el-table v-loading="loadingData" :data="tableData" border style="width: 100%" element-loading-text="加载中..." highlight-current-row>
           <el-table-column prop="classroomName" label="教室名称" align="center"/>
-          <el-table-column prop="classroomCode" label="教室编码" align="center"/>
+          <el-table-column prop="classroomCode" label="教室编码" align="center">
+            <template slot-scope="scope">
+              <el-tag size="medium">{{ scope.row.classroomCode }}</el-tag>
+            </template>
+          </el-table-column>
           <el-table-column :formatter="isFlagFormatter" prop="isProjector" label="是否有投影仪" align="center"/>
           <el-table-column :formatter="isFlagFormatter" prop="isComputer" label="是否有电脑" align="center"/>
           <el-table-column prop="buildingName" label="所属大楼" align="center" min-width="130"/>
@@ -13,16 +68,12 @@
           <el-table-column prop="classroomStatus" label="教室状态" align="center"/>
           <el-table-column prop="master" label="负责人" align="center"/>
           <el-table-column prop="latestOder" label="最新预约情况" align="center"/>
-          <el-table-column label="操作" width="150" align="center">
+          <el-table-column label="操作" width="150" align="center" fixed="right">
             <template slot-scope="scope">
               <el-button
                 type="grey"
                 size="small"
                 @click="handleEdit(scope.$index, scope.row)">详情</el-button>
-              <el-button
-                type="danger"
-                size="small"
-                @click="handleDelete(scope.$index, scope.row)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -38,12 +89,144 @@
             @current-change="pageCurrentChange"/>
         </div>
       </el-tab-pane>
-      <el-tab-pane v-for="building in buildingInfos" :label="building.secondName" :key="building.buildingCode">
+      <el-tab-pane v-for="building in buildingInfos" :label="building.secondName" :key="building.buildingCode" :name="building.buildingCode">
         <el-tabs :tab-position="chilfrentabPosition" @tab-click="changeFloorTabs">
-          <el-tab-pane v-for="item in buildingEveryFloors" :label="item" :key="item">
-            <el-table v-loading="loadingData" :data="floorTableData" border style="width: 100%" element-loading-text="加载中..." highlight-current-row>
+          <el-tab-pane label="全部">
+            <el-form :inline="true" :model="formInline">
+              <el-form-item label="教室名称" prop="classroomName">
+                <el-input v-model="formInline.classroomName" prefix-icon="el-icon-search" clearable placeholder="请输入教室名称"/>
+              </el-form-item>
+              &nbsp;&nbsp;&nbsp;
+              <el-form-item label="是否存在投影仪" prop="isProjector">
+                <el-select v-model="formInline.isProjector" clearable placeholder="请选择是否存在投影仪" >
+                  <el-option
+                    v-for="item in isFlag"
+                    :key="item.type"
+                    :label="item.label"
+                    :value="item.type"/>
+                </el-select>
+              </el-form-item>
+              &nbsp;&nbsp;&nbsp;
+              <el-form-item label="是否有电脑" prop="isComputer">
+                <el-select v-model="formInline.isComputer" clearable placeholder="请选择是否有电脑" >
+                  <el-option
+                    v-for="item in isFlag"
+                    :key="item.type"
+                    :label="item.label"
+                    :value="item.type"/>
+                </el-select>
+              </el-form-item>
+              &nbsp;&nbsp;&nbsp;
+              <el-form-item label="所属楼层">
+                <el-select v-model="formInline.floor" clearable placeholder="请选择所属楼层">
+                  <el-option
+                    v-for="item in buildingEveryFloors"
+                    :key="item"
+                    :label="item"
+                    :value="item"/>
+                </el-select>
+              </el-form-item>
+              &nbsp;&nbsp;&nbsp;
+              <el-form-item label="期望预约时间">
+                <div class="block">
+                  <el-date-picker
+                    :picker-options="pickerOptions"
+                    v-model="formInline.expectedOderDate"
+                    type="datetimerange"
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    align="right"/>
+                </div>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" @click="onFloorTotalSubmit">查询</el-button>
+              </el-form-item>
+            </el-form>
+            <el-table v-loading="loadingData" :data="totalTableData" style="width: 100%" element-loading-text="加载中..." highlight-current-row>
               <el-table-column prop="classroomName" label="教室名称" align="center"/>
-              <el-table-column prop="classroomCode" label="教室编码" align="center"/>
+              <el-table-column prop="classroomCode" label="教室编码" align="center">
+                <template slot-scope="scope">
+                  <el-tag size="medium">{{ scope.row.classroomCode }}</el-tag>
+                </template>
+              </el-table-column>
+              <el-table-column :formatter="isFlagFormatter" prop="isProjector" label="是否有投影仪" align="center"/>
+              <el-table-column :formatter="isFlagFormatter" prop="isComputer" label="是否有电脑" align="center"/>
+              <el-table-column :formatter="floorFormatter" prop="floor" label="所属楼层" align="center"/>
+              <el-table-column prop="oderCondition" label="预约情况" align="center"/>
+              <el-table-column prop="classroomStatus" label="教室状态" align="center"/>
+              <el-table-column prop="master" label="负责人" align="center"/>
+              <el-table-column prop="latestOder" label="最新预约情况" align="center"/>
+              <el-table-column label="操作" width="150" align="center">
+                <template slot-scope="scope">
+                  <el-button
+                    type="grey"
+                    size="small"
+                    @click="handleEdit(scope.$index, scope.row)">详情</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+            <div class="pagination">
+              <el-pagination
+                :total="total"
+                :current-page="filter.page"
+                :page-sizes="[10, 20, 50, 100]"
+                :page-size="filter.per_page"
+                background
+                layout="total, sizes, prev, pager, next, jumper"
+                @size-change="pageSizeChange"
+                @current-change="pageCurrentChange"/>
+            </div>
+          </el-tab-pane>
+          <el-tab-pane v-for="item in buildingEveryFloors" :label="item" :key="item" :name="item">
+            <el-form :inline="true" :model="formInline">
+              <el-form-item label="教室名称" prop="classroomName">
+                <el-input v-model="formInline.classroomName" prefix-icon="el-icon-search" clearable placeholder="请输入教室名称"/>
+              </el-form-item>
+              &nbsp;&nbsp;&nbsp;
+              <el-form-item label="是否存在投影仪" prop="isProjector">
+                <el-select v-model="formInline.isProjector" clearable placeholder="请选择是否存在投影仪" >
+                  <el-option
+                    v-for="item in isFlag"
+                    :key="item.type"
+                    :label="item.label"
+                    :value="item.type"/>
+                </el-select>
+              </el-form-item>
+              &nbsp;&nbsp;&nbsp;
+              <el-form-item label="是否有电脑" prop="isComputer">
+                <el-select v-model="formInline.isComputer" clearable placeholder="请选择是否有电脑" >
+                  <el-option
+                    v-for="item in isFlag"
+                    :key="item.type"
+                    :label="item.label"
+                    :value="item.type"/>
+                </el-select>
+              </el-form-item>
+              &nbsp;&nbsp;&nbsp;
+              <el-form-item label="期望预约时间">
+                <div class="block">
+                  <el-date-picker
+                    :picker-options="pickerOptions"
+                    v-model="formInline.expectedOderDate"
+                    type="datetimerange"
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    align="right"/>
+                </div>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" @click="onFloorSubmit">查询</el-button>
+              </el-form-item>
+            </el-form>
+            <el-table v-loading="loadingData" :data="floorTableData" style="width: 100%" element-loading-text="加载中..." highlight-current-row>
+              <el-table-column prop="classroomName" label="教室名称" align="center"/>
+              <el-table-column prop="classroomCode" label="教室编码" align="center">
+                <template slot-scope="scope">
+                  <el-tag size="medium">{{ scope.row.classroomCode }}</el-tag>
+                </template>
+              </el-table-column>
               <el-table-column :formatter="isFlagFormatter" prop="isProjector" label="是否有投影仪" align="center"/>
               <el-table-column :formatter="isFlagFormatter" prop="isComputer" label="是否有电脑" align="center"/>
               <el-table-column prop="buildingName" label="所属大楼" align="center" min-width="130"/>
@@ -57,10 +240,6 @@
                     type="grey"
                     size="small"
                     @click="handleEdit(scope.$index, scope.row)">详情</el-button>
-                  <el-button
-                    type="danger"
-                    size="small"
-                    @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -88,6 +267,33 @@ export default {
 
   data() {
     return {
+      pickerOptions: {
+        shortcuts: [{
+          text: '最近一周',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近一个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近三个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+            picker.$emit('pick', [start, end])
+          }
+        }]
+      },
       testConnectUrl: '/shiep/crm/test',
       tabPosition: 'top',
       chilfrentabPosition: 'left',
@@ -101,6 +307,23 @@ export default {
       buildingInfos: [],
       buildingEveryFloors: [],
       floorTableData: [],
+      totalTableData: [],
+      formInline: {
+        classroomName: '',
+        isProjector: '',
+        isComputer: '',
+        buildingCode: '',
+        expectedOderDate: [],
+        floor: ''
+      },
+      isFlag: [{
+        type: '1',
+        label: '是'
+      }, {
+        type: '2',
+        label: '否'
+      }],
+      currentBuildingCode: '',
       getAllClassroomListUrl: '/shiep/crm/allClassroomList',
       getAllBuildingListUrl: '/shiep/crm/allBuildingList'
     }
@@ -185,6 +408,7 @@ export default {
         return ''
       }
     },
+    // 楼层页卡处理
     jdugeFloor(item) {
       console.log(item)
       if (item) {
@@ -206,34 +430,165 @@ export default {
     },
     // 处理每幢楼
     changeBuildingTabs: function(tab, event) {
+      this.formInline = {
+        classroomName: '',
+        isProjector: '',
+        isComputer: '',
+        buildingCode: '',
+        expectedOderDate: []
+      }
       this.buildingEveryFloors = []
       for (let i = 0; i < this.buildingInfos.length; i++) {
-        if (event.target.getAttribute('id') === this.buildingInfos[i].tabId) {
+        if (tab.name === this.buildingInfos[i].buildingCode) {
           this.jdugeFloor(this.buildingInfos[i].floors)
         }
       }
+      this.getBuildingClassroom(tab.name)
     },
     // 切换楼层获取数据
     changeFloorTabs: function(tab, event) {
-      var str = event.target.getAttribute('id')
-      var strArr = str.split('-')
-      var res = (parseInt(strArr[1]) + 1).toString()
-      console.log(res)
-    },
-    // 获取对应楼下楼层教室  todo 做个表监视器用来监视哪些楼层可用
-    getBuildingClassroom(item) {
+      console.log(tab.name)
+      var res = tab.name
       const self = this
       const postDate = {
-        tabId: item
+        buildingCode: this.currentBuildingCode,
+        floor: res,
+        pageNum: self.filter.page,
+        pageSize: self.filter.per_page
       }
-      self.loadingData = true
-      self.$axios.post(self.getAllBuildingListUrl, postDate).then((res) => {
+      self.$axios.post(self.getAllClassroomListUrl, postDate).then((res) => {
         self.loadingData = false
         if (res.data.success) {
-          self.buildingInfos = res.data.result
+          self.floorTableData = res.data.result.list
+          self.total = res.data.result.total
         } else {
           if (res.data.message || res.data.msg) {
-            self.buildingInfos = []
+            self.floorTableData = []
+            self.$message.error(res.data.message || res.data.msg)
+          }
+        }
+      })
+    },
+    // 获取对应楼下楼层教室
+    getBuildingClassroom(buildingCode) {
+      const self = this
+      self.loadingData = true
+      this.currentBuildingCode = buildingCode
+      if (buildingCode === 'undefined') {
+        this.getAllClassroomList()
+      } else {
+        const postDate = {
+          buildingCode: buildingCode,
+          pageNum: self.filter.page,
+          pageSize: self.filter.per_page
+        }
+        self.$axios.post(self.getAllClassroomListUrl, postDate).then((res) => {
+          self.loadingData = false
+          if (res.data.success) {
+            self.totalTableData = res.data.result.list
+            self.total = res.data.result.total
+          } else {
+            if (res.data.message || res.data.msg) {
+              self.totalTableData = []
+              self.$message.error(res.data.message || res.data.msg)
+            }
+          }
+        })
+      }
+    },
+    // 全部页面查询页面
+    onSubmit() {
+      const self = this
+      var startDate = null
+      var endDate = null
+      if (self.formInline.expectedOderDate.length > 0) {
+        startDate = self.formInline.expectedOderDate[0].getTime()
+        endDate = self.formInline.expectedOderDate[1].getTime()
+      }
+      const postDate = {
+        classroomName: self.formInline.classroomName,
+        buildingCode: self.formInline.buildingCode,
+        isComputer: self.formInline.isComputer,
+        isProjector: self.formInline.isProjector,
+        startDate: startDate,
+        endDate: endDate,
+        pageNum: self.filter.page,
+        pageSize: self.filter.per_page
+      }
+      self.loadingData = true
+      self.$axios.post(self.getAllClassroomListUrl, postDate).then((res) => {
+        self.loadingData = false
+        if (res.data.success) {
+          self.tableData = res.data.result.list
+          self.total = res.data.result.total
+        } else {
+          if (res.data.message || res.data.msg) {
+            self.tableData = []
+            self.$message.error(res.data.message || res.data.msg)
+          }
+        }
+      })
+    },
+    onFloorTotalSubmit() {
+      const self = this
+      var startDate = null
+      var endDate = null
+      console.log(self.formInline.expectedOderDate)
+      if (self.formInline.expectedOderDate.length > 0) {
+        startDate = self.formInline.expectedOderDate[0].getTime()
+        endDate = self.formInline.expectedOderDate[1].getTime()
+      }
+      const postDate = {
+        classroomName: self.formInline.classroomName,
+        isComputer: self.formInline.isComputer,
+        isProjector: self.formInline.isProjector,
+        startDate: startDate,
+        endDate: endDate,
+        pageNum: self.filter.page,
+        pageSize: self.filter.per_page,
+        floor: self.formInline.floor
+      }
+      self.loadingData = true
+      self.$axios.post(self.getAllClassroomListUrl, postDate).then((res) => {
+        self.loadingData = false
+        if (res.data.success) {
+          self.totalTableData = res.data.result.list
+          self.total = res.data.result.total
+        } else {
+          if (res.data.message || res.data.msg) {
+            self.totalTableData = []
+            self.$message.error(res.data.message || res.data.msg)
+          }
+        }
+      })
+    },
+    onFloorSubmit() {
+      const self = this
+      var startDate = null
+      var endDate = null
+      console.log(self.formInline.expectedOderDate)
+      if (self.formInline.expectedOderDate.length > 0) {
+        startDate = self.formInline.expectedOderDate[0].getTime()
+        endDate = self.formInline.expectedOderDate[1].getTime()
+      }
+      const postDate = {
+        classroomName: self.formInline.classroomName,
+        isComputer: self.formInline.isComputer,
+        isProjector: self.formInline.isProjector,
+        startDate: startDate,
+        endDate: endDate,
+        pageNum: self.filter.page,
+        pageSize: self.filter.per_page
+      }
+      self.loadingData = true
+      self.$axios.post(self.getAllClassroomListUrl, postDate).then((res) => {
+        self.loadingData = false
+        if (res.data.success) {
+          self.floorTableData = res.data.result.list
+          self.total = res.data.result.total
+        } else {
+          if (res.data.message || res.data.msg) {
+            self.floorTableData = []
             self.$message.error(res.data.message || res.data.msg)
           }
         }
@@ -252,5 +607,8 @@ export default {
 </script>
 
 <style>
-
+  .el-tabs--left .el-tabs__header.is-left{
+    margin-right: 30px;
+    margin-top: 70px;
+  }
 </style>
