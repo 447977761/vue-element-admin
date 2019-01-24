@@ -71,6 +71,20 @@ export const constantRouterMap = [
     ]
   },
   {
+    path: '/ClassroomDetail',
+    component: Layout,
+    redirect: 'classroomDetail',
+    hidden: true,
+    children: [
+      {
+        path: 'classroomDetail',
+        component: () => import('@/views/classroomDetail/index'),
+        name: 'ClassroomDetail',
+        meta: { title: '教室详情', icon: 'dashboard', noCache: true }
+      }
+    ]
+  },
+  {
     path: '/BookingClassroom',
     component: Layout,
     redirect: 'bookingClassroom',

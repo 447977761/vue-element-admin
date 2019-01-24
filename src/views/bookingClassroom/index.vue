@@ -54,26 +54,26 @@
           </el-form-item>
         </el-form>
         <el-table v-loading="loadingData" :data="tableData" border style="width: 100%" element-loading-text="加载中..." highlight-current-row>
-          <el-table-column prop="classroomName" label="教室名称" align="center"/>
-          <el-table-column prop="classroomCode" label="教室编码" align="center">
+          <el-table-column prop="classroomName" label="教室名称" align="center" min-width="100"/>
+          <el-table-column prop="classroomCode" label="教室编码" align="center" min-width="100">
             <template slot-scope="scope">
               <el-tag size="medium">{{ scope.row.classroomCode }}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column :formatter="isFlagFormatter" prop="isProjector" label="是否有投影仪" align="center"/>
-          <el-table-column :formatter="isFlagFormatter" prop="isComputer" label="是否有电脑" align="center"/>
-          <el-table-column prop="buildingName" label="所属大楼" align="center" min-width="130"/>
-          <el-table-column :formatter="floorFormatter" prop="floor" label="所属楼层" align="center"/>
-          <el-table-column prop="oderCondition" label="预约情况" align="center"/>
-          <el-table-column prop="classroomStatus" label="教室状态" align="center"/>
-          <el-table-column prop="master" label="负责人" align="center"/>
-          <el-table-column prop="latestOder" label="最新预约情况" align="center"/>
+          <el-table-column :formatter="isFlagFormatter" prop="isProjector" label="是否有投影仪" align="center" min-width="120"/>
+          <el-table-column :formatter="isFlagFormatter" prop="isComputer" label="是否有电脑" align="center" min-width="100"/>
+          <el-table-column prop="buildingName" label="所属大楼" align="center" min-width="150"/>
+          <el-table-column :formatter="floorFormatter" prop="floor" label="所属楼层" align="center" min-width="100"/>
+          <el-table-column prop="oderCondition" label="预约情况" align="center" min-width="100"/>
+          <el-table-column prop="classroomStatus" label="教室状态" align="center" min-width="100"/>
+          <el-table-column prop="master" label="负责人" align="center" min-width="100"/>
+          <el-table-column prop="latestOder" label="最新预约情况" align="center" min-width="200"/>
           <el-table-column label="操作" width="150" align="center" fixed="right">
             <template slot-scope="scope">
               <el-button
                 type="grey"
                 size="small"
-                @click="handleEdit(scope.$index, scope.row)">详情</el-button>
+                @click="handleDetail(scope.$index, scope.row)">详情</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -144,25 +144,25 @@
               </el-form-item>
             </el-form>
             <el-table v-loading="loadingData" :data="totalTableData" style="width: 100%" element-loading-text="加载中..." highlight-current-row>
-              <el-table-column prop="classroomName" label="教室名称" align="center"/>
-              <el-table-column prop="classroomCode" label="教室编码" align="center">
+              <el-table-column prop="classroomName" label="教室名称" align="center" min-width="100"/>
+              <el-table-column prop="classroomCode" label="教室编码" align="center" min-width="100">
                 <template slot-scope="scope">
                   <el-tag size="medium">{{ scope.row.classroomCode }}</el-tag>
                 </template>
               </el-table-column>
-              <el-table-column :formatter="isFlagFormatter" prop="isProjector" label="是否有投影仪" align="center"/>
-              <el-table-column :formatter="isFlagFormatter" prop="isComputer" label="是否有电脑" align="center"/>
-              <el-table-column :formatter="floorFormatter" prop="floor" label="所属楼层" align="center"/>
-              <el-table-column prop="oderCondition" label="预约情况" align="center"/>
-              <el-table-column prop="classroomStatus" label="教室状态" align="center"/>
-              <el-table-column prop="master" label="负责人" align="center"/>
-              <el-table-column prop="latestOder" label="最新预约情况" align="center"/>
-              <el-table-column label="操作" width="150" align="center">
+              <el-table-column :formatter="isFlagFormatter" prop="isProjector" label="是否有投影仪" align="center" min-width="120"/>
+              <el-table-column :formatter="isFlagFormatter" prop="isComputer" label="是否有电脑" align="center" min-width="100"/>
+              <el-table-column :formatter="floorFormatter" prop="floor" label="所属楼层" align="center" min-width="100"/>
+              <el-table-column prop="oderCondition" label="预约情况" align="center" min-width="100"/>
+              <el-table-column prop="classroomStatus" label="教室状态" align="center" min-width="100"/>
+              <el-table-column prop="master" label="负责人" align="center" min-width="100"/>
+              <el-table-column prop="latestOder" label="最新预约情况" align="center" min-width="200"/>
+              <el-table-column label="操作" width="150" align="center" fixed="right">
                 <template slot-scope="scope">
                   <el-button
                     type="grey"
                     size="small"
-                    @click="handleEdit(scope.$index, scope.row)">详情</el-button>
+                    @click="handleDetail(scope.$index, scope.row)">详情</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -221,25 +221,25 @@
               </el-form-item>
             </el-form>
             <el-table v-loading="loadingData" :data="floorTableData" style="width: 100%" element-loading-text="加载中..." highlight-current-row>
-              <el-table-column prop="classroomName" label="教室名称" align="center"/>
-              <el-table-column prop="classroomCode" label="教室编码" align="center">
+              <el-table-column prop="classroomName" label="教室名称" align="center" min-width="100"/>
+              <el-table-column prop="classroomCode" label="教室编码" align="center" min-width="100">
                 <template slot-scope="scope">
                   <el-tag size="medium">{{ scope.row.classroomCode }}</el-tag>
                 </template>
               </el-table-column>
-              <el-table-column :formatter="isFlagFormatter" prop="isProjector" label="是否有投影仪" align="center"/>
-              <el-table-column :formatter="isFlagFormatter" prop="isComputer" label="是否有电脑" align="center"/>
-              <el-table-column prop="buildingName" label="所属大楼" align="center" min-width="130"/>
-              <el-table-column prop="oderCondition" label="预约情况" align="center"/>
-              <el-table-column prop="classroomStatus" label="教室状态" align="center"/>
-              <el-table-column prop="master" label="负责人" align="center"/>
-              <el-table-column prop="latestOder" label="最新预约情况" align="center"/>
-              <el-table-column label="操作" width="150" align="center">
+              <el-table-column :formatter="isFlagFormatter" prop="isProjector" label="是否有投影仪" align="center" min-width="120"/>
+              <el-table-column :formatter="isFlagFormatter" prop="isComputer" label="是否有电脑" align="center" min-width="100"/>
+              <el-table-column prop="buildingName" label="所属大楼" align="center" min-width="150"/>
+              <el-table-column prop="oderCondition" label="预约情况" align="center" min-width="100"/>
+              <el-table-column prop="classroomStatus" label="教室状态" align="center" min-width="100"/>
+              <el-table-column prop="master" label="负责人" align="center" min-width="100"/>
+              <el-table-column prop="latestOder" label="最新预约情况" align="center" min-width="200"/>
+              <el-table-column label="操作" width="150" align="center" fixed="right">
                 <template slot-scope="scope">
                   <el-button
                     type="grey"
                     size="small"
-                    @click="handleEdit(scope.$index, scope.row)">详情</el-button>
+                    @click="handleDetail(scope.$index, scope.row)">详情</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -592,6 +592,16 @@ export default {
             self.$message.error(res.data.message || res.data.msg)
           }
         }
+      })
+    },
+    handleDetail(index, row) {
+      var id = row.id
+      var classroomCode = row.classroomCode
+      var classroomName = row.classroomName
+      this.$router.push({
+        path: '/ClassroomDetail/classroomDetail',
+        // params: row,
+        query: { id, classroomCode, classroomName }
       })
     },
     pageSizeChange(val) {
